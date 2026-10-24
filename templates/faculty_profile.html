@@ -1,0 +1,306 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en" class="page-faculty-profile">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Faculty Management System</title>
+
+    <link rel="stylesheet" href="{% static 'style.css' %}?v=5">
+
+    
+    <link rel="stylesheet" href="{% static 'portal-refresh.css' %}?v=1">
+</head>
+
+<body class="page-faculty-profile">
+
+    <header class="top-header">
+
+        <div class="logo-section">
+            <div class="logo">F</div>
+            <div class="system-name">Faculty Management System</div>
+        </div>
+
+        <div class="faculty-name">
+
+            <div class="faculty-avatar">
+                {% if faculty.ProfilePhoto %}
+                    <img src="{{ faculty.ProfilePhoto.url }}" alt="Faculty profile photo">
+                {% else %}
+                    {{ faculty.FirstName|first|upper }}
+                {% endif %}
+            </div>
+
+            <span>
+                {{ faculty.FirstName }} {{ faculty.LastName }}
+            </span>
+
+            <a href="{% url 'logout' %}" class="logout-btn">
+                Logout
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <div class="layout">
+
+        <aside class="sidebar">
+
+            <div class="sidebar-title">
+                Faculty Portal
+            </div>
+
+            <ul>
+
+                <li>
+                    <a href="{% url 'faculty_dashboard' %}">
+                        <span class="menu-icon">🏠</span>
+                        Dashboard
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{% url 'faculty_profile' %}" class="active">
+                        <span class="menu-icon">👤</span>
+                        My Profile
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{% url 'faculty_schedule' %}">
+                        <span class="menu-icon">📅</span>
+                        My Schedule
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{% url 'faculty_attendance' %}">
+                        <span class="menu-icon">✓</span>
+                        My Attendance
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{% url 'faculty_salary' %}">
+                        <span class="menu-icon">💰</span>
+                        My Salary
+                    </a>
+                </li>
+
+            </ul>
+
+        </aside>
+
+
+        <main class="main-content">
+
+            <div class="page-header">
+
+                <h1>My Profile</h1>
+
+                <p>
+                    View your personal and professional information.
+                </p>
+
+            </div>
+
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.tags == "error" %}
+                        <div class="profile-photo-message" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+
+            <div class="profile-layout">
+
+                <div class="profile-card">
+
+                    <form class="profile-photo-form" id="profilePhotoForm" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="large-avatar">
+                            {% if faculty.ProfilePhoto %}
+                                <img src="{{ faculty.ProfilePhoto.url }}" alt="Faculty profile photo">
+                            {% else %}
+                                {{ faculty.FirstName|first|upper }}
+                            {% endif %}
+                        </div>
+                        <input
+                            class="profile-photo-input"
+                            id="profilePhotoInput"
+                            type="file"
+                            name="profile_photo"
+                            accept="image/*">
+                        <label class="profile-photo-trigger" for="profilePhotoInput" aria-label="Upload profile photo" title="Upload profile photo">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M4 8h3l1.5-2h7L17 8h3v11H4z"></path>
+                                <circle cx="12" cy="13" r="3.5"></circle>
+                            </svg>
+                        </label>
+                    </form>
+
+                    <h2>
+                        {{ faculty.FirstName }} {{ faculty.LastName }}
+                    </h2>
+
+                    <div class="designation">
+                        {{ faculty.Designation }}
+                    </div>
+
+                    <div class="faculty-id">
+                        {{ faculty.FacultyID }}
+                    </div>
+
+                    <br>
+
+                    <div class="status">
+                        ● {{ faculty.Status }}
+                    </div>
+
+                </div>
+
+
+                <div class="details-card">
+
+                    <h2>Personal & Professional Details</h2>
+
+
+                    <div class="section-title">
+                        Personal Information
+                    </div>
+
+                    <div class="details-grid">
+
+                        <div class="detail-item">
+                            <span class="detail-label">
+                                First Name
+                            </span>
+                            <span class="detail-value">
+                                {{ faculty.FirstName }}
+                            </span>
+                        </div>
+
+                        <div class="detail-item">
+                            <span class="detail-label">
+                                Last Name
+                            </span>
+                            <span class="detail-value">
+                                {{ faculty.LastName }}
+                            </span>
+                        </div>
+
+                        <div class="detail-item">
+                            <span class="detail-label">
+                                Gender
+                            </span>
+                            <span class="detail-value">
+                                {{ faculty.Gender }}
+                            </span>
+                        </div>
+
+                        <div class="detail-item">
+                            <span class="detail-label">
+                                Date of Birth
+                            </span>
+                            <span class="detail-value">
+                                {{ faculty.DOB|date:"d M Y" }}
+                            </span>
+                        </div>
+
+                        <div class="detail-item">
+                            <span class="detail-label">
+                                Email
+                            </span>
+                            <span class="detail-value">
+                                {{ faculty.Email }}
+                            </span>
+                        </div>
+
+                        <div class="detail-item">
+                            <span class="detail-label">
+                                Contact Number
+                            </span>
+                            <span class="detail-value">
+                                {{ faculty.ContactNumber }}
+                            </span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="section-title">
+                        Professional Information
+                    </div>
+
+                    <div class="details-grid">
+
+                        <div class="detail-item">
+                            <span class="detail-label">
+                                Qualification
+                            </span>
+                            <span class="detail-value">
+                                {{ faculty.Qualification }}
+                            </span>
+                        </div>
+
+                        <div class="detail-item">
+                            <span class="detail-label">
+                                Designation
+                            </span>
+                            <span class="detail-value">
+                                {{ faculty.Designation }}
+                            </span>
+                        </div>
+
+                        <div class="detail-item">
+                            <span class="detail-label">
+                                Joining Date
+                            </span>
+                            <span class="detail-value">
+                                {{ faculty.JoiningDate|date:"d M Y" }}
+                            </span>
+                        </div>
+
+                        <div class="detail-item">
+                            <span class="detail-label">
+                                Experience
+                            </span>
+                            <span class="detail-value">
+                                {{ faculty.Experience }} Years
+                            </span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="section-title">
+                        Address
+                    </div>
+
+                    <div class="address-box">
+                        {{ faculty.Address }}
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+    <script>
+        document.getElementById("profilePhotoInput").addEventListener("change", function() {
+            if (this.files.length > 0) {
+                document.getElementById("profilePhotoForm").requestSubmit();
+            }
+        });
+    </script>
+
+</body>
+</html>

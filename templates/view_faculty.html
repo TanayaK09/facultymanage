@@ -1,0 +1,173 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>View Faculty - Faculty Management System</title>
+
+    <link rel="stylesheet" href="{% static 'style.css' %}?v=4">
+
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <aside class="sidebar">
+
+        <div class="sidebar-header">
+            <h2>Faculty Management</h2>
+        </div>
+
+        <ul class="sidebar-menu">
+
+            <li>
+                <a href="{% url 'dashboard' %}">
+                    Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'manage_faculty' %}" class="active">
+                    Manage Faculty
+                </a>
+            </li>
+             <li>
+                <a href="{% url 'schedule' %}">
+                    Schedule
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'attendance' %}">
+                    Attendance
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'salary' %}">
+                    Salary
+                </a>
+            </li>
+
+           
+            <li>
+                <a href="{% url 'logout' %}">
+                    Logout
+                </a>
+            </li>
+
+        </ul>
+
+    </aside>
+
+
+    <main class="main-content">
+
+        <div class="page-container">
+
+            <h1 class="page-title">
+                Faculty Details
+            </h1>
+
+            <div class="view-faculty-card">
+
+                <h2>
+                    {{ faculty.FirstName }} {{ faculty.LastName }}
+                </h2>
+
+                <div class="faculty-details">
+
+                    <div class="detail-item">
+                        <strong>Faculty ID</strong><br>
+                        {{ faculty.FacultyID }}
+                    </div>
+
+                    <div class="detail-item">
+                        <strong>Gender</strong><br>
+                        {{ faculty.Gender }}
+                    </div>
+
+                    <div class="detail-item">
+                        <strong>Date of Birth</strong><br>
+                        {{ faculty.DOB }}
+                    </div>
+
+                    <div class="detail-item">
+                        <strong>Email</strong><br>
+                        {{ faculty.Email }}
+                    </div>
+
+                    <div class="detail-item">
+                        <strong>Contact Number</strong><br>
+                        {{ faculty.ContactNumber }}
+                    </div>
+
+                    <div class="detail-item">
+                        <strong>Qualification</strong><br>
+                        {{ faculty.Qualification }}
+                    </div>
+
+                    <div class="detail-item">
+                        <strong>Designation</strong><br>
+                        {{ faculty.Designation }}
+                    </div>
+
+                    <div class="detail-item">
+                        <strong>Joining Date</strong><br>
+                        {{ faculty.JoiningDate }}
+                    </div>
+
+                    <div class="detail-item">
+                        <strong>Experience</strong><br>
+                        {{ faculty.Experience }} years
+                    </div>
+
+                    <div class="detail-item">
+                        <strong>Status</strong><br>
+                        {{ faculty.Status }}
+                    </div>
+
+                    <div class="detail-item">
+                        <strong>Address</strong><br>
+                        {{ faculty.Address }}
+                    </div>
+
+                </div>
+
+                <br>
+
+                <div class="action-buttons">
+
+                    <a
+                        href="{% url 'update_faculty' faculty.FacultyID %}"
+                        class="btn btn-primary"
+                    >
+                        Update
+                    </a>
+
+                    <a
+                        href="{% url 'manage_faculty' %}"
+                        class="btn btn-warning"
+                    >
+                        Back
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+
+</html>

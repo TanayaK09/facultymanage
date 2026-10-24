@@ -1,0 +1,429 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="en" class="page-add-faculty">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Faculty - Faculty Management System</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}?v=4">
+    
+</head>
+
+<body class="page-add-faculty">
+<div class="dashboard-container">
+<aside class="sidebar">
+
+    <div class="sidebar-header">
+        <h2>Faculty Management</h2>
+    </div>
+
+    <ul class="sidebar-menu">
+
+        <li>
+            <a href="{% url 'dashboard' %}">
+                Dashboard
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'manage_faculty' %}" class="active">
+                Manage Faculty
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'schedule' %}">
+                Schedule
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'attendance' %}">
+                Attendance
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'salary' %}">
+                Salary
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'logout' %}">
+                Logout
+            </a>
+        </li>
+
+    </ul>
+
+</aside>
+
+
+<main class="main-content">
+
+    <div class="form-container">
+
+        <div class="form-card">
+
+            <h2>Add Faculty</h2>
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="first_name">
+                            First Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="first_name"
+                            name="first_name"
+                            placeholder="Enter first name"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="last_name">
+                            Last Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="last_name"
+                            name="last_name"
+                            placeholder="Enter last name"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="gender">
+                            Gender
+                        </label>
+
+                        <select
+                            id="gender"
+                            name="gender"
+                            required
+                        >
+
+                            <option value="">
+                                Select Gender
+                            </option>
+
+                            <option value="Male">
+                                Male
+                            </option>
+
+                            <option value="Female">
+                                Female
+                            </option>
+
+                            <option value="Other">
+                                Other
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="dob">
+                            Date of Birth
+                        </label>
+
+                        <input
+                            type="date"
+                            id="dob"
+                            name="dob"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="email">
+                            Email
+                        </label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="Enter email address"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="contact_number">
+                            Contact Number
+                        </label>
+
+                        <input
+                            type="text"
+                            id="contact_number"
+                            name="contact_number"
+                            maxlength="10"
+                            placeholder="Enter contact number"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- Faculty Login Password -->
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Faculty Password
+                    </label>
+
+                    <div class="faculty-password-wrap">
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Set password for faculty login"
+                            required
+                        >
+                        <button
+                            type="button"
+                            class="faculty-password-toggle"
+                            aria-label="Show password"
+                            aria-pressed="false"
+                        >
+                            <svg class="eye-open" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                            <svg class="eye-closed" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M3 3l18 18"></path>
+                                <path d="M10.6 5.1A10.7 10.7 0 0 1 12 5c6.4 0 10 7 10 7a16 16 0 0 1-3.1 3.9"></path>
+                                <path d="M6.2 6.2C3.5 8 2 12 2 12s3.6 7 10 7a10.4 10.4 0 0 0 4-.8"></path>
+                                <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="address">
+                        Address
+                    </label>
+
+                    <textarea
+                        id="address"
+                        name="address"
+                        placeholder="Enter address"
+                        required
+                    ></textarea>
+
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="qualification">
+                            Qualification
+                        </label>
+
+                        <input
+                            type="text"
+                            id="qualification"
+                            name="qualification"
+                            placeholder="e.g. B.Tech, M.Tech, Ph.D"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="designation">
+                            Subject
+                        </label>
+
+                        <input
+                            type="text"
+                            id="designation"
+                            name="designation"
+                            placeholder="e.g. Mathematics, Physics"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="joining_date">
+                            Joining Date
+                        </label>
+
+                        <input
+                            type="date"
+                            id="joining_date"
+                            name="joining_date"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="experience">
+                            Experience (Years)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="experience"
+                            name="experience"
+                            min="0"
+                            step="0.1"
+                            placeholder="Enter experience"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="status">
+                        Status
+                    </label>
+
+                    <select
+                        id="status"
+                        name="status"
+                        required
+                    >
+
+                        <option value="">
+                            Select Status
+                        </option>
+
+                        <option value="Active">
+                            Active
+                        </option>
+
+                        <option value="Inactive">
+                            Inactive
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="action-buttons">
+
+                    <button
+                        type="submit"
+                        class="btn btn-success"
+                    >
+                        Add Faculty
+                    </button>
+
+
+                    <button
+                        type="reset"
+                        class="btn btn-warning"
+                    >
+                        Clear
+                    </button>
+
+
+                    <a
+                        href="{% url 'manage_faculty' %}"
+                        class="btn btn-danger"
+                    >
+                        Cancel
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</main>
+
+</div>
+
+<script>
+    const facultyPassword = document.getElementById("password");
+    const facultyPasswordToggle = document.querySelector(".faculty-password-toggle");
+    const addFacultyForm = facultyPassword.form;
+
+    facultyPasswordToggle.addEventListener("click", function() {
+        const showPassword = facultyPassword.type === "password";
+
+        facultyPassword.type = showPassword ? "text" : "password";
+        facultyPasswordToggle.setAttribute("aria-pressed", String(showPassword));
+        facultyPasswordToggle.setAttribute("aria-label", showPassword ? "Hide password" : "Show password");
+        facultyPassword.focus();
+    });
+
+    addFacultyForm.addEventListener("reset", function() {
+        facultyPassword.type = "password";
+        facultyPasswordToggle.setAttribute("aria-pressed", "false");
+        facultyPasswordToggle.setAttribute("aria-label", "Show password");
+    });
+</script>
+
+</body>
+
+</html>

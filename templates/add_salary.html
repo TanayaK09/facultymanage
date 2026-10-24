@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Add Salary</title>
+
+    <link rel="stylesheet" href="/static/style.css?v=4">
+
+</head>
+
+<body>
+
+<div class="dashboard-container">
+    <aside class="sidebar">
+
+        <div class="sidebar-header">
+
+            <h2>Faculty Management</h2>
+
+        </div>
+
+        <ul class="sidebar-menu">
+
+            <li>
+                <a href="{% url 'dashboard' %}">
+                    Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'manage_faculty' %}">
+                    Manage Faculty
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'schedule' %}">
+                    Schedule
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'attendance' %}">
+                    Attendance
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'salary' %}" class="active">
+                    Salary
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'logout' %}">
+                    Logout
+                </a>
+            </li>
+
+        </ul>
+
+    </aside>
+
+    <main class="main-content">
+
+        <div class="form-container">
+
+            <div class="form-card">
+
+                <h2>
+                    Calculate Salary
+                </h2>
+
+
+                <form method="POST">
+
+                    {% csrf_token %}
+
+
+                    <!-- FACULTY -->
+
+                    <div class="form-group">
+
+                        <label>
+                            Faculty
+                        </label>
+
+                        <select
+                            name="faculty"
+                            id="faculty"
+                            required
+                        >
+
+                            <option value="">
+                                Select Faculty
+                            </option>
+
+                            {% for faculty in faculties %}
+
+                            <option value="{{ faculty.FacultyID }}">
+
+                                {{ faculty.FacultyID }}
+                                -
+                                {{ faculty.FirstName }}
+                                {{ faculty.LastName }}
+
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- MONTH AND YEAR -->
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+
+                            <label>
+                                Month
+                            </label>
+
+                            <select
+                                name="month"
+                                id="month"
+                                required
+                            >
+
+                                <option value="">
+                                    Select Month
+                                </option>
+
+                                <option value="1">
+                                    January
+                                </option>
+
+                                <option value="2">
+                                    February
+                                </option>
+
+                                <option value="3">
+                                    March
+                                </option>
+
+                                <option value="4">
+                                    April
+                                </option>
+
+                                <option value="5">
+                                    May
+                                </option>
+
+                                <option value="6">
+                                    June
+                                </option>
+
+                                <option value="7">
+                                    July
+                                </option>
+
+                                <option value="8">
+                                    August
+                                </option>
+
+                                <option value="9">
+                                    September
+                                </option>
+
+                                <option value="10">
+                                    October
+                                </option>
+
+                                <option value="11">
+                                    November
+                                </option>
+
+                                <option value="12">
+                                    December
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>
+                                Year
+                            </label>
+
+                            <input
+                                type="number"
+                                name="year"
+                                id="year"
+                                min="2000"
+                                max="2100"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- TOTAL HOURS -->
+
+                    <div class="form-group">
+
+                        <label>
+                            Total Working Hours
+                        </label>
+
+                        <input
+                            type="text"
+                            id="total_hours"
+                            value="0 hours"
+                            readonly
+                        >
+
+                    </div>
+
+
+                    <!-- HOURLY RATE -->
+
+                    <div class="form-group">
+
+                        <label>
+                            Hourly Rate
+                        </label>
+
+                        <input
+                            type="number"
+                            name="hourly_rate"
+                            id="hourly_rate"
+                            step="0.01"
+                            min="0"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- DEDUCTION -->
+
+                    <div class="form-group">
+
+                        <label>
+                            Deduction
+                        </label>
+
+                        <input
+                            type="number"
+                            name="deduction"
+                            id="deduction"
+                            step="0.01"
+                            min="0"
+                            value="0"
+                        >
+
+                    </div>
+
+
+                    <!-- NET SALARY PREVIEW -->
+
+                    <div class="form-group">
+
+                        <label>
+                            Net Salary
+                        </label>
+
+                        <input
+                            type="text"
+                            id="net_salary"
+                            value="₹ 0.00"
+                            readonly
+                        >
+
+                    </div>
+
+
+                    <!-- PAYMENT DATE -->
+
+                    <div class="form-group">
+
+                        <label>
+                            Payment Date
+                        </label>
+
+                        <input
+                            type="date"
+                            name="payment_date"
+                        >
+
+                    </div>
+
+
+                    <!-- BUTTONS -->
+
+                    <div>
+
+                        <button
+                            type="submit"
+                            class="btn btn-success"
+                        >
+                            Calculate & Save Salary
+                        </button>
+
+                        <a
+                            href="{% url 'salary' %}"
+                            class="btn btn-info"
+                        >
+                            Back
+                        </a>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<script>
+
+const faculty = document.getElementById("faculty");
+const month = document.getElementById("month");
+const year = document.getElementById("year");
+
+const totalHours = document.getElementById("total_hours");
+const hourlyRate = document.getElementById("hourly_rate");
+const deduction = document.getElementById("deduction");
+const netSalary = document.getElementById("net_salary");
+
+
+function calculateSalaryPreview() {
+
+    let hours = parseFloat(
+        totalHours.value
+    ) || 0;
+
+    let rate = parseFloat(
+        hourlyRate.value
+    ) || 0;
+
+    let deduct = parseFloat(
+        deduction.value
+    ) || 0;
+
+    let salary = (
+        hours * rate
+    ) - deduct;
+
+    if (salary < 0) {
+        salary = 0;
+    }
+
+    netSalary.value =
+        "₹ " + salary.toFixed(2);
+}
+
+
+function getTotalHours() {
+
+    let facultyValue = faculty.value;
+    let monthValue = month.value;
+    let yearValue = year.value;
+
+
+    if (
+        !facultyValue ||
+        !monthValue ||
+        !yearValue
+    ) {
+
+        totalHours.value = "0 hours";
+
+        calculateSalaryPreview();
+
+        return;
+    }
+
+
+    totalHours.value =
+        "Calculating...";
+
+
+    fetch(
+        "{% url 'get_total_hours' %}" +
+        "?faculty=" +
+        encodeURIComponent(facultyValue) +
+        "&month=" +
+        encodeURIComponent(monthValue) +
+        "&year=" +
+        encodeURIComponent(yearValue)
+    )
+
+    .then(
+        response => response.json()
+    )
+
+    .then(
+        data => {
+
+            totalHours.value =
+                data.hours + " hours";
+
+            calculateSalaryPreview();
+
+        }
+    )
+
+    .catch(
+        error => {
+
+            totalHours.value =
+                "0 hours";
+
+            calculateSalaryPreview();
+
+        }
+    );
+}
+
+
+faculty.addEventListener(
+    "change",
+    getTotalHours
+);
+
+month.addEventListener(
+    "change",
+    getTotalHours
+);
+
+year.addEventListener(
+    "input",
+    getTotalHours
+);
+
+hourlyRate.addEventListener(
+    "input",
+    calculateSalaryPreview
+);
+
+deduction.addEventListener(
+    "input",
+    calculateSalaryPreview
+);
+
+</script>
+
+</body>
+
+</html>

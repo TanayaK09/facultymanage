@@ -1,0 +1,406 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en" class="page-faculty-attendance">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        My Attendance - Faculty Management System
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'style.css' %}?v=5"
+    >
+
+    
+    <link rel="stylesheet" href="{% static 'portal-refresh.css' %}?v=1">
+
+</head>
+
+
+<body class="page-faculty-attendance">
+
+
+<header class="top-header">
+
+    <div class="logo-section">
+
+        <div class="logo">
+            F
+        </div>
+
+        <div class="system-name">
+            Faculty Management System
+        </div>
+
+    </div>
+
+
+    <div class="faculty-name">
+
+        <div class="faculty-avatar">
+            {% if faculty.ProfilePhoto %}
+                <img src="{{ faculty.ProfilePhoto.url }}" alt="Faculty profile photo">
+            {% else %}
+                {{ faculty.FirstName|first|upper }}
+            {% endif %}
+        </div>
+
+        <span>
+            {{ faculty.FirstName }} {{ faculty.LastName }}
+        </span>
+
+        <a
+            href="{% url 'logout' %}"
+            class="logout-btn"
+        >
+            Logout
+        </a>
+
+    </div>
+
+</header>
+
+
+<div class="layout">
+
+
+    <aside class="sidebar">
+
+        <div class="sidebar-title">
+            Faculty Portal
+        </div>
+
+
+        <ul>
+
+            <li>
+
+                <a href="{% url 'faculty_dashboard' %}">
+
+                    <span class="menu-icon">
+                        🏠
+                    </span>
+                    Dashboard
+                </a>
+
+            </li>
+
+
+            <li>
+
+                <a href="{% url 'faculty_profile' %}">
+
+                    <span class="menu-icon">
+                        👤
+                    </span>
+                    My Profile
+                </a>
+
+            </li>
+
+
+            <li>
+
+                <a href="{% url 'faculty_schedule' %}">
+
+                    <span class="menu-icon">
+                        📅
+                    </span>
+                    My Schedule
+                </a>
+
+            </li>
+
+
+            <li>
+
+                <a
+                    href="{% url 'faculty_attendance' %}"
+                    class="active"
+                >
+
+                    <span class="menu-icon">
+                        ✓
+                    </span>
+                    My Attendance
+
+                </a>
+
+            </li>
+            <li>
+
+                <a href="{% url 'faculty_salary' %}">
+                    <span class="menu-icon">
+                        💰
+                    </span>
+                    My Salary
+
+                </a>
+
+            </li>
+
+        </ul>
+
+    </aside>
+
+
+    <main class="main-content">
+
+
+        <div class="page-header">
+
+            <h1>
+                My Attendance
+            </h1>
+
+            <p>
+                View your attendance history and attendance summary.
+            </p>
+
+        </div>
+
+
+        <div class="summary-cards">
+
+
+            <div class="summary-card total">
+
+                <div class="summary-card-label">
+                    Total Working Days
+                </div>
+
+                <div class="summary-card-value">
+                    {{ total_days }}
+                </div>
+
+            </div>
+
+
+            <div class="summary-card present">
+
+                <div class="summary-card-label">
+                    Days Present
+                </div>
+
+                <div class="summary-card-value">
+                    {{ present_days }}
+                </div>
+
+            </div>
+
+
+            <div class="summary-card absent">
+
+                <div class="summary-card-label">
+                    Days Absent
+                </div>
+
+                <div class="summary-card-value">
+                    {{ absent_days }}
+                </div>
+
+            </div>
+
+
+            <div class="summary-card percentage">
+
+                <div class="summary-card-label">
+                    Attendance %
+                </div>
+
+                <div class="summary-card-value">
+                    {{ attendance_percentage }}%
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <div class="section">
+
+
+            <div class="section-header">
+
+                <h2>
+                    Attendance History
+                </h2>
+
+                <span>
+                    {{ total_days }} Records
+                </span>
+
+            </div>
+
+
+            {% if attendance_records %}
+
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Attendance ID
+                                </th>
+
+                                <th>
+                                    Date
+                                </th>
+
+                                <th>
+                                    Check In
+                                </th>
+
+                                <th>
+                                    Check Out
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                                <th>
+                                    Remarks
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+
+                            {% for attendance in attendance_records %}
+
+                                <tr>
+
+                                    <td>
+                                        {{ attendance.AttendanceID }}
+                                    </td>
+
+                                    <td>
+                                        {{ attendance.Date|date:"d M Y" }}
+                                    </td>
+
+                                    <td>
+
+                                        {% if attendance.CheckInTime %}
+
+                                            {{ attendance.CheckInTime|time:"h:i A" }}
+
+                                        {% else %}
+
+                                            —
+
+                                        {% endif %}
+
+                                    </td>
+
+                                    <td>
+
+                                        {% if attendance.CheckOutTime %}
+
+                                            {{ attendance.CheckOutTime|time:"h:i A" }}
+
+                                        {% else %}
+
+                                            —
+
+                                        {% endif %}
+
+                                    </td>
+
+                                    <td>
+
+                                        {% if attendance.Status == "Present" %}
+
+                                            <span class="status-badge status-present">
+                                                Present
+                                            </span>
+
+                                        {% elif attendance.Status == "Absent" %}
+
+                                            <span class="status-badge status-absent">
+                                                Absent
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="status-badge status-other">
+                                                {{ attendance.Status }}
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+                                    <td>
+                                        {{ attendance.Remarks|default:"—" }}
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+            {% else %}
+
+
+                <div class="no-data">
+
+                    <div class="no-data-icon">
+                        📋
+                    </div>
+
+                    <strong>
+                        No Attendance Records
+                    </strong>
+
+                    <br><br>
+
+                    <span>
+                        Your attendance records will appear here.
+                    </span>
+
+                </div>
+
+
+            {% endif %}
+
+
+        </div>
+
+
+    </main>
+
+
+</div>
+
+
+</body>
+
+</html>

@@ -1,0 +1,506 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salary - Faculty Management System</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}?v=4">
+    <script src="{% static 'admin-ui.js' %}" defer></script>
+</head>
+<body class="admin-page">
+
+<div class="dashboard-container">
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>Faculty Management</h2>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li>
+                <a href="{% url 'dashboard' %}">
+                    Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'manage_faculty' %}">
+                    Manage Faculty
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'schedule' %}">
+                    Schedule
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'attendance' %}">
+                    Attendance
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'salary' %}" class="active">
+                    Salary
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'logout' %}">
+                    Logout
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+
+        <div class="salary-page">
+
+            <h1>Salary Management</h1>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="card">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="card">
+
+                <h2>Calculate Salary</h2>
+
+                <form method="POST" id="salaryForm">
+                    {% csrf_token %}
+
+                    <div class="attendance-form-row">
+
+                        <div class="attendance-form-group">
+
+                            <label for="faculty">
+                                Faculty
+                            </label>
+
+                            <select
+                                name="faculty"
+                                id="faculty"
+                                required
+                            >
+                                <option value="">
+                                    Select Faculty
+                                </option>
+
+                                {% for faculty in faculties %}
+
+                                <option
+                                    value="{{ faculty.FacultyID }}"
+                                    {% if selected_salary and selected_salary.FacultyID.FacultyID == faculty.FacultyID %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ faculty.FacultyID }} -
+                                    {{ faculty.FirstName }}
+                                    {{ faculty.LastName }}
+                                </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+                        <div class="attendance-form-group">
+
+                            <label for="month">
+                                Month
+                            </label>
+
+                            <select
+                                name="month"
+                                id="month"
+                                required
+                            >
+                                <option value="">
+                                    Select Month
+                                </option>
+
+                                <option value="1">January</option>
+                                <option value="2">February</option>
+                                <option value="3">March</option>
+                                <option value="4">April</option>
+                                <option value="5">May</option>
+                                <option value="6">June</option>
+                                <option value="7">July</option>
+                                <option value="8">August</option>
+                                <option value="9">September</option>
+                                <option value="10">October</option>
+                                <option value="11">November</option>
+                                <option value="12">December</option>
+                            </select>
+
+                        </div>
+
+                        <div class="attendance-form-group">
+
+                            <label for="year">
+                                Year
+                            </label>
+
+                            <input
+                                type="number"
+                                name="year"
+                                id="year"
+                                min="2000"
+                                max="2100"
+                                value="{% if selected_salary %}{{ selected_salary.Year }}{% else %}2026{% endif %}"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+                    <div class="attendance-form-row">
+
+                        <div class="attendance-form-group">
+
+                            <label for="total_hours">
+                                Total Hours
+                            </label>
+
+                            <input
+                                type="number"
+                                name="total_hours"
+                                id="total_hours"
+                                step="0.01"
+                                readonly
+                                placeholder="Fetched from Attendance"
+                            >
+
+                        </div>
+
+                        <div class="attendance-form-group">
+
+                            <label for="hourly_rate">
+                                Hourly Rate
+                            </label>
+
+                            <input
+                                type="number"
+                                name="hourly_rate"
+                                id="hourly_rate"
+                                min="0"
+                                step="0.01"
+                                placeholder="Enter hourly rate"
+                                required
+                                {% if selected_salary %}
+                                    value="{{ selected_salary.HourlyRate }}"
+                                {% endif %}
+                            >
+
+                        </div>
+
+                    </div>
+
+                    <div class="attendance-form-row">
+
+                        <div class="attendance-form-group">
+
+                            <label for="deduction">
+                                Deduction
+                            </label>
+
+                            <input
+                                type="number"
+                                name="deduction"
+                                id="deduction"
+                                min="0"
+                                step="0.01"
+                                value="{% if selected_salary %}{{ selected_salary.Deduction }}{% else %}0{% endif %}"
+                            >
+
+                        </div>
+
+                        <div class="attendance-form-group">
+
+                            <label for="net_salary">
+                                Net Salary
+                            </label>
+
+                            <input
+                                type="number"
+                                name="net_salary"
+                                id="net_salary"
+                                step="0.01"
+                                readonly
+                                placeholder="Calculated automatically"
+                            >
+
+                        </div>
+
+                        <div class="attendance-form-group">
+
+                            <label for="payment_date">
+                                Payment Date
+                            </label>
+
+                            <input
+                                type="date"
+                                name="payment_date"
+                                id="payment_date"
+                                {% if selected_salary and selected_salary.PaymentDate %}
+                                    value="{{ selected_salary.PaymentDate|date:'Y-m-d' }}"
+                                {% endif %}
+                            >
+
+                        </div>
+
+                    </div>
+
+                    {% if selected_salary %}
+                        <input
+                            type="hidden"
+                            name="salary_id"
+                            value="{{ selected_salary.SalaryID }}"
+                        >
+                    {% endif %}
+
+                    <button
+                        type="submit"
+                        class="btn btn-success"
+                        id="saveSalary"
+                    >
+                        {% if selected_salary %}
+                            Update Salary
+                        {% else %}
+                            Add Salary
+                        {% endif %}
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn"
+                        id="clearSalary"
+                    >
+                        Clear
+                    </button>
+
+                </form>
+
+            </div>
+
+            <div class="card">
+
+                <h2>Salary Records</h2>
+
+                <div class="attendance-table-container">
+
+                    <table class="attendance-table">
+
+                        <thead>
+
+                            <tr>
+                                <th>Faculty ID</th>
+                                <th>Faculty Name</th>
+                                <th>Month</th>
+                                <th>Year</th>
+                                <th>Total Hours</th>
+                                <th>Hourly Rate</th>
+                                <th>Deduction</th>
+                                <th>Net Salary</th>
+                                <th>Payment Date</th>
+                                <th>Actions</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for salary in salaries %}
+
+                            <tr>
+
+                                <td>
+                                    {{ salary.FacultyID.FacultyID }}
+                                </td>
+
+                                <td>
+                                    {{ salary.FacultyID.FirstName }}
+                                    {{ salary.FacultyID.LastName }}
+                                </td>
+
+                                <td>
+                                    {{ salary.Month }}
+                                </td>
+
+                                <td>
+                                    {{ salary.Year }}
+                                </td>
+
+                                <td>
+                                    {{ salary.TotalHours }}
+                                </td>
+
+                                <td>
+                                    ₹ {{ salary.HourlyRate }}
+                                </td>
+
+                                <td>
+                                    ₹ {{ salary.Deduction }}
+                                </td>
+
+                                <td>
+                                    ₹ {{ salary.NetSalary }}
+                                </td>
+
+                                <td>
+                                    {% if salary.PaymentDate %}
+                                        {{ salary.PaymentDate }}
+                                    {% else %}
+                                        Not Paid
+                                    {% endif %}
+                                </td>
+
+                                <td>
+
+                                    <a
+                                        href="{% url 'salary' %}?faculty={{ salary.FacultyID.FacultyID }}&month={{ salary.Month }}&year={{ salary.Year }}"
+                                        class="btn btn-success btn-small"
+                                    >
+                                        Update
+                                    </a>
+
+                                </td>
+
+                            </tr>
+
+                            {% empty %}
+
+                            <tr>
+
+                                <td
+                                    colspan="10"
+                                    class="no-records"
+                                >
+                                    No salary records found.
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const faculty = document.getElementById("faculty");
+    const month = document.getElementById("month");
+    const year = document.getElementById("year");
+
+    const totalHours = document.getElementById("total_hours");
+    const hourlyRate = document.getElementById("hourly_rate");
+    const deduction = document.getElementById("deduction");
+    const netSalary = document.getElementById("net_salary");
+
+    const clearButton = document.getElementById("clearSalary");
+
+    function calculateNetSalary() {
+
+        const hours = parseFloat(totalHours.value) || 0;
+        const rate = parseFloat(hourlyRate.value) || 0;
+        const deduct = parseFloat(deduction.value) || 0;
+
+        const grossSalary = hours * rate;
+        const finalSalary = grossSalary - deduct;
+
+        netSalary.value = finalSalary >= 0
+            ? finalSalary.toFixed(2)
+            : "0.00";
+    }
+
+    function fetchTotalHours() {
+
+        const facultyValue = faculty.value;
+        const monthValue = month.value;
+        const yearValue = year.value;
+
+        if (!facultyValue || !monthValue || !yearValue) {
+            totalHours.value = "";
+            netSalary.value = "";
+            return;
+        }
+
+        fetch(
+            "{% url 'get_total_hours' %}?faculty=" +
+            encodeURIComponent(facultyValue) +
+            "&month=" +
+            encodeURIComponent(monthValue) +
+            "&year=" +
+            encodeURIComponent(yearValue)
+        )
+        .then(response => response.json())
+        .then(data => {
+
+            totalHours.value = data.hours || 0;
+
+            calculateNetSalary();
+
+        })
+        .catch(() => {
+
+            totalHours.value = "";
+
+            alert("Unable to fetch attendance hours.");
+
+        });
+    }
+
+    faculty.addEventListener("change", fetchTotalHours);
+    month.addEventListener("change", fetchTotalHours);
+    year.addEventListener("change", fetchTotalHours);
+
+    hourlyRate.addEventListener("input", calculateNetSalary);
+    deduction.addEventListener("input", calculateNetSalary);
+
+    clearButton.addEventListener("click", function () {
+
+        faculty.value = "";
+        month.value = "";
+        year.value = "2026";
+
+        totalHours.value = "";
+        hourlyRate.value = "";
+        deduction.value = "0";
+        netSalary.value = "";
+
+    });
+
+    if (faculty.value && month.value && year.value) {
+        fetchTotalHours();
+    }
+
+});
+
+</script>
+
+</body>
+</html>

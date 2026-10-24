@@ -1,0 +1,427 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Update Salary</title>
+
+    <link rel="stylesheet" href="/static/style.css?v=4">
+
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-header">
+
+            <h2>Faculty Management</h2>
+
+        </div>
+
+        <ul class="sidebar-menu">
+
+            <li>
+                <a href="{% url 'dashboard' %}">
+                    Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'manage_faculty' %}">
+                    Manage Faculty
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'schedule' %}">
+                    Schedule
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'attendance' %}">
+                    Attendance
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'salary' %}" class="active">
+                    Salary
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'logout' %}">
+                    Logout
+                </a>
+            </li>
+
+        </ul>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+
+    <main class="main-content">
+
+        <div class="form-container">
+
+            <div class="form-card">
+
+                <h2>
+                    Update Salary
+                </h2>
+
+
+                <form method="POST">
+
+                    {% csrf_token %}
+
+
+                    <!-- FACULTY -->
+
+                    <div class="form-group">
+
+                        <label>
+                            Faculty
+                        </label>
+
+                        <select
+                            name="faculty"
+                            required
+                        >
+
+                            {% for faculty in faculties %}
+
+                            <option
+                                value="{{ faculty.FacultyID }}"
+                                {% if faculty.FacultyID == salary_record.FacultyID.FacultyID %}
+                                    selected
+                                {% endif %}
+                            >
+
+                                {{ faculty.FacultyID }}
+                                -
+                                {{ faculty.FirstName }}
+                                {{ faculty.LastName }}
+
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- MONTH AND YEAR -->
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+
+                            <label>
+                                Month
+                            </label>
+
+                            <select
+                                name="month"
+                                required
+                            >
+
+                                <option
+                                    value="1"
+                                    {% if salary_record.Month == 1 %}selected{% endif %}
+                                >
+                                    January
+                                </option>
+
+                                <option
+                                    value="2"
+                                    {% if salary_record.Month == 2 %}selected{% endif %}
+                                >
+                                    February
+                                </option>
+
+                                <option
+                                    value="3"
+                                    {% if salary_record.Month == 3 %}selected{% endif %}
+                                >
+                                    March
+                                </option>
+
+                                <option
+                                    value="4"
+                                    {% if salary_record.Month == 4 %}selected{% endif %}
+                                >
+                                    April
+                                </option>
+
+                                <option
+                                    value="5"
+                                    {% if salary_record.Month == 5 %}selected{% endif %}
+                                >
+                                    May
+                                </option>
+
+                                <option
+                                    value="6"
+                                    {% if salary_record.Month == 6 %}selected{% endif %}
+                                >
+                                    June
+                                </option>
+
+                                <option
+                                    value="7"
+                                    {% if salary_record.Month == 7 %}selected{% endif %}
+                                >
+                                    July
+                                </option>
+
+                                <option
+                                    value="8"
+                                    {% if salary_record.Month == 8 %}selected{% endif %}
+                                >
+                                    August
+                                </option>
+
+                                <option
+                                    value="9"
+                                    {% if salary_record.Month == 9 %}selected{% endif %}
+                                >
+                                    September
+                                </option>
+
+                                <option
+                                    value="10"
+                                    {% if salary_record.Month == 10 %}selected{% endif %}
+                                >
+                                    October
+                                </option>
+
+                                <option
+                                    value="11"
+                                    {% if salary_record.Month == 11 %}selected{% endif %}
+                                >
+                                    November
+                                </option>
+
+                                <option
+                                    value="12"
+                                    {% if salary_record.Month == 12 %}selected{% endif %}
+                                >
+                                    December
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>
+                                Year
+                            </label>
+
+                            <input
+                                type="number"
+                                name="year"
+                                value="{{ salary_record.Year }}"
+                                min="2000"
+                                max="2100"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- TOTAL HOURS -->
+
+                    <div class="form-group">
+
+                        <label>
+                            Total Working Hours
+                        </label>
+
+                        <input
+                            type="text"
+                            id="total_hours"
+                            value="{{ salary_record.TotalHours }} hours"
+                            readonly
+                        >
+
+                    </div>
+
+
+                    <!-- HOURLY RATE -->
+
+                    <div class="form-group">
+
+                        <label>
+                            Hourly Rate
+                        </label>
+
+                        <input
+                            type="number"
+                            name="hourly_rate"
+                            id="hourly_rate"
+                            value="{{ salary_record.HourlyRate }}"
+                            step="0.01"
+                            min="0"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- DEDUCTION -->
+
+                    <div class="form-group">
+
+                        <label>
+                            Deduction
+                        </label>
+
+                        <input
+                            type="number"
+                            name="deduction"
+                            id="deduction"
+                            value="{{ salary_record.Deduction }}"
+                            step="0.01"
+                            min="0"
+                        >
+
+                    </div>
+
+
+                    <!-- NET SALARY -->
+
+                    <div class="form-group">
+
+                        <label>
+                            Net Salary
+                        </label>
+
+                        <input
+                            type="text"
+                            id="net_salary"
+                            value="₹ {{ salary_record.NetSalary }}"
+                            readonly
+                        >
+
+                    </div>
+
+
+                    <!-- PAYMENT DATE -->
+
+                    <div class="form-group">
+
+                        <label>
+                            Payment Date
+                        </label>
+
+                        <input
+                            type="date"
+                            name="payment_date"
+                            value="{{ salary_record.PaymentDate|date:'Y-m-d' }}"
+                        >
+
+                    </div>
+
+
+                    <!-- BUTTONS -->
+
+                    <button
+                        type="submit"
+                        class="btn btn-success"
+                    >
+                        Update Salary
+                    </button>
+
+                    <a
+                        href="{% url 'view_salary' %}"
+                        class="btn btn-info"
+                    >
+                        Back
+                    </a>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<script>
+
+const totalHours = document.getElementById("total_hours");
+
+const hourlyRate = document.getElementById("hourly_rate");
+
+const deduction = document.getElementById("deduction");
+
+const netSalary = document.getElementById("net_salary");
+
+
+function calculateSalary() {
+
+    let hours = parseFloat(
+        totalHours.value
+    ) || 0;
+
+    let rate = parseFloat(
+        hourlyRate.value
+    ) || 0;
+
+    let deduct = parseFloat(
+        deduction.value
+    ) || 0;
+
+    let salary = (
+        hours * rate
+    ) - deduct;
+
+    if (salary < 0) {
+
+        salary = 0;
+
+    }
+
+    netSalary.value =
+        "₹ " + salary.toFixed(2);
+}
+
+
+hourlyRate.addEventListener(
+    "input",
+    calculateSalary
+);
+
+
+deduction.addEventListener(
+    "input",
+    calculateSalary
+);
+
+</script>
+
+</body>
+
+</html>
+

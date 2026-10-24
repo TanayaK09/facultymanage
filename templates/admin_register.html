@@ -1,0 +1,176 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en" class="page-admin-register">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Registration - Faculty Management System</title>
+
+    <link rel="stylesheet" href="{% static 'style.css' %}?v=4">
+
+    
+
+</head>
+
+<body class="page-admin-register">
+
+    <div class="register-box">
+
+        <div class="register-header">
+
+            <h1>Admin Registration</h1>
+
+            <p>Create your admin account</p>
+
+        </div>
+
+
+        <div class="register-form">
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+
+                <div class="form-group">
+
+                    <label for="fullname">
+                        Full Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="fullname"
+                        name="fullname"
+                        placeholder="Enter full name"
+                        required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="username">
+                        Username
+                    </label>
+
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        placeholder="Choose username"
+                        required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="email">
+                        Email
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Enter email address"
+                        required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="contact">
+                        Phone Number
+                    </label>
+
+                    <input
+                        type="text"
+                        id="contact"
+                        name="contact"
+                        placeholder="Enter phone number"
+                        required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Enter password"
+                        required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="confirmpassword">
+                        Confirm Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="confirmpassword"
+                        name="confirmpassword"
+                        placeholder="Confirm password"
+                        required>
+
+                </div>
+
+
+                <div class="button-group">
+
+                    <button
+                        type="submit"
+                        class="btn-register">
+                        Register
+                    </button>
+
+                    <button
+                        type="reset"
+                        class="btn-clear">
+                        Clear
+                    </button>
+
+                </div>
+
+            </form>
+
+
+            <div class="login-links">
+
+                <p>
+
+                    Already have an account?
+
+                    <a href="/">
+                        Back to Login
+                    </a>
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+
+</html>

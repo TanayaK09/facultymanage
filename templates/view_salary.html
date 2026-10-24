@@ -1,0 +1,223 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>View Salary - Faculty Management System</title>
+
+<link rel="stylesheet" href="{% static 'style.css' %}?v=4">
+
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+<aside class="sidebar">
+
+    <div class="sidebar-header">
+        <h2>Faculty Management</h2>
+    </div>
+
+    <ul class="sidebar-menu">
+
+        <li>
+            <a href="{% url 'dashboard' %}">
+                Dashboard
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'manage_faculty' %}">
+                Manage Faculty
+            </a>
+        </li>
+
+        <li>
+                <a href="{% url 'schedule' %}">
+                    Schedule
+                </a>
+        </li>
+        <li>
+            <a href="{% url 'attendance' %}">
+                Attendance
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'salary' %}" class="active">
+                Salary
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'logout' %}">
+                Logout
+            </a>
+        </li>
+
+    </ul>
+
+</aside>
+
+
+<main class="main-content">
+
+    <div class="view-page">
+
+        <div class="view-page-card">
+
+            <h2>Faculty Salary Records</h2>
+
+            <div class="action-buttons" style="margin-bottom: 20px;">
+
+                <a
+                    href="{% url 'add_salary' %}"
+                    class="btn btn-success"
+                >
+                    Add Salary
+                </a>
+
+                <a
+                    href="{% url 'salary' %}"
+                    class="btn btn-primary"
+                >
+                    Back
+                </a>
+
+            </div>
+
+
+            <div class="table-container">
+
+                <table class="data-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Salary ID</th>
+                            <th>Faculty ID</th>
+                            <th>Faculty Name</th>
+                            <th>Month</th>
+                            <th>Year</th>
+                            <th>Hourly Rate</th>
+                            <th>Total Hours</th>
+                            <th>Deduction</th>
+                            <th>Net Salary</th>
+                            <th>Payment Date</th>
+                            <th>Actions</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for record in salary_records %}
+
+                        <tr>
+
+                            <td>
+                                {{ record.SalaryID }}
+                            </td>
+
+                            <td>
+                                {{ record.FacultyID.FacultyID }}
+                            </td>
+
+                            <td>
+                                {{ record.FacultyID.FirstName }}
+                                {{ record.FacultyID.LastName }}
+                            </td>
+
+                            <td>
+                                {{ record.Month }}
+                            </td>
+
+                            <td>
+                                {{ record.Year }}
+                            </td>
+
+                            <td>
+                                ₹{{ record.HourlyRate }}
+                            </td>
+
+                            <td>
+                                {{ record.TotalHours }}
+                            </td>
+
+                            <td>
+                                ₹{{ record.Deduction }}
+                            </td>
+
+                            <td>
+                                ₹{{ record.NetSalary }}
+                            </td>
+
+                            <td>
+                                {% if record.PaymentDate %}
+                                    {{ record.PaymentDate }}
+                                {% else %}
+                                    Not Paid
+                                {% endif %}
+                            </td>
+
+                            <td>
+
+                                <div class="action-buttons">
+
+                                    <a
+                                        href="{% url 'update_salary' record.SalaryID %}"
+                                        class="btn btn-primary btn-small"
+                                    >
+                                        Update
+                                    </a>
+
+                                    <a
+                                        href="{% url 'delete_salary' record.SalaryID %}"
+                                        class="btn btn-danger btn-small"
+                                        onclick="return confirm('Are you sure you want to delete this salary record?');"
+                                    >
+                                        Delete
+                                    </a>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+
+                            <td colspan="11" class="no-records">
+                                No salary records found.
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+</div>
+
+</body>
+
+</html>

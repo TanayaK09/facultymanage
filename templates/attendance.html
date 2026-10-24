@@ -1,0 +1,592 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Attendance - Faculty Management System</title>
+
+    <link rel="stylesheet" href="{% static 'style.css' %}?v=8">
+    <script src="{% static 'admin-ui.js' %}" defer></script>
+
+</head>
+
+<body class="admin-page">
+
+<div class="dashboard-container">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-header">
+
+            <h2>Faculty Management</h2>
+
+        </div>
+
+
+        <ul class="sidebar-menu">
+
+            <li>
+                <a href="{% url 'dashboard' %}">
+                    Dashboard
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'manage_faculty' %}">
+                    Manage Faculty
+                </a>
+            </li>
+             <li>
+                <a href="{% url 'schedule' %}">
+                    Schedule
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'attendance' %}" class="active">
+                    Attendance
+                </a>
+
+            </li>
+            
+           
+            <li>
+                <a href="{% url 'salary' %}">
+                    Salary
+                </a>
+            </li>
+            <li>
+
+                <a href="{% url 'logout' %}">
+                    Logout
+                </a>
+
+            </li>
+
+        </ul>
+
+    </aside>
+
+    <main class="main-content">
+
+        <div class="attendance-page">
+
+            <h1>
+                Attendance
+            </h1>
+
+            <div class="attendance-tabs">
+
+                <a
+                    href="{% url 'attendance' %}?tab=mark"
+                    class="attendance-tab {% if active_tab == 'mark' %}active{% endif %}"
+                >
+
+                    Mark Attendance
+
+                </a>
+
+
+                <a
+                    href="{% url 'attendance' %}?tab=view"
+                    class="attendance-tab {% if active_tab == 'view' %}active{% endif %}"
+                >
+
+                    View Attendance
+
+                </a>
+
+            </div>
+
+
+            <!-- ================= MARK ATTENDANCE ================= -->
+
+            {% if active_tab == "mark" %}
+
+            <div class="attendance-card">
+
+                <h2>
+
+                    Mark Attendance
+
+                </h2>
+
+
+                <form method="POST">
+
+                    {% csrf_token %}
+
+
+                    <!-- Faculty + Date -->
+
+                    <div class="attendance-form-row">
+
+
+                        <!-- Faculty -->
+
+                        <div class="attendance-form-group">
+
+                            <label>
+
+                                Faculty
+
+                            </label>
+
+
+                            <select name="faculty" required>
+
+                                <option value="">
+
+                                    Select Faculty
+
+                                </option>
+
+
+                                {% for faculty in faculties %}
+
+                                <option value="{{ faculty.FacultyID }}">
+
+                                    {{ faculty.FacultyID }} -
+                                    {{ faculty.FirstName }}
+                                    {{ faculty.LastName }}
+
+                                </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- Date -->
+
+                        <div class="attendance-form-group">
+
+                            <label>
+
+                                Date
+
+                            </label>
+
+
+                            <input
+                                type="date"
+                                name="date"
+                                id="attendanceDate"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ================= STATUS ================= -->
+
+                    <div class="attendance-form-group">
+
+                        <label>
+
+                            Status
+
+                        </label>
+
+
+                        <div class="status-buttons">
+
+
+                            <!-- Present -->
+
+                            <label class="status-option present-option">
+
+                                <input
+                                    type="radio"
+                                    name="status"
+                                    value="Present"
+                                    required
+                                >
+
+                                Present
+
+                            </label>
+
+
+                            <!-- Absent -->
+
+                            <label class="status-option absent-option">
+
+                                <input
+                                    type="radio"
+                                    name="status"
+                                    value="Absent"
+                                >
+
+                                Absent
+
+                            </label>
+
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ================= TIME ================= -->
+
+                    <div class="attendance-form-row">
+
+
+                        <!-- Check In -->
+
+                        <div class="attendance-form-group">
+
+                            <label>
+
+                                Check In Time
+
+                            </label>
+
+
+                            <input
+                                type="time"
+                                name="check_in"
+                            >
+
+                        </div>
+
+
+                        <!-- Check Out -->
+
+                        <div class="attendance-form-group">
+
+                            <label>
+
+                                Check Out Time
+
+                            </label>
+
+
+                            <input
+                                type="time"
+                                name="check_out"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ================= REMARKS ================= -->
+
+                    <div class="attendance-form-group">
+
+                        <label>
+
+                            Remarks
+
+                        </label>
+
+
+                        <textarea
+                            name="remarks"
+                            rows="4"
+                            placeholder="Enter remarks if required"
+                        ></textarea>
+
+                    </div>
+
+
+                    <!-- ================= SAVE ================= -->
+
+                    <button
+                        type="submit"
+                        class="btn btn-success"
+                    >
+
+                        Save Attendance
+
+                    </button>
+
+
+                </form>
+
+            </div>
+
+
+            <!-- ================= VIEW ATTENDANCE ================= -->
+
+            {% else %}
+
+            <div class="attendance-card">
+
+                <h2>
+
+                    Attendance Records
+
+                </h2>
+
+
+                <div class="attendance-table-container">
+
+                    <table class="attendance-table">
+
+
+                        <!-- TABLE HEADER -->
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Attendance ID
+                                </th>
+
+                                <th>
+                                    Faculty ID
+                                </th>
+
+                                <th>
+                                    Faculty Name
+                                </th>
+
+                                <th>
+                                    Date
+                                </th>
+
+                                <th>
+                                    Check In
+                                </th>
+
+                                <th>
+                                    Check Out
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                                <th>
+                                    Remarks
+                                </th>
+
+                                <th>
+                                    Action
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <!-- TABLE BODY -->
+
+                        <tbody>
+
+                            {% for record in attendance_records %}
+
+                            <tr>
+
+
+                                <!-- Attendance ID -->
+
+                                <td>
+
+                                    {{ record.AttendanceID }}
+
+                                </td>
+
+
+                                <!-- Faculty ID -->
+
+                                <td>
+
+                                    {{ record.FacultyID.FacultyID }}
+
+                                </td>
+
+
+                                <!-- Faculty Name -->
+
+                                <td>
+
+                                    {{ record.FacultyID.FirstName }}
+
+                                    {{ record.FacultyID.LastName }}
+
+                                </td>
+
+
+                                <!-- Date -->
+
+                                <td>
+
+                                    {{ record.Date|date:"M. j, Y" }}
+
+                                </td>
+
+
+                                <!-- Check In -->
+
+                                <td>
+
+                                    {% if record.CheckInTime %}
+
+                                        {{ record.CheckInTime|time:"g a" }}
+
+                                    {% else %}
+
+                                        -
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <!-- Check Out -->
+
+                                <td>
+
+                                    {% if record.CheckOutTime %}
+
+                                        {{ record.CheckOutTime|time:"g a" }}
+
+                                    {% else %}
+
+                                        -
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <!-- Status -->
+
+                                <td>
+
+                                    {% if record.Status == "Present" %}
+
+                                    <span class="status-present">
+
+                                        Present
+
+                                    </span>
+
+                                    {% else %}
+
+                                    <span class="status-absent">
+
+                                        Absent
+
+                                    </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <!-- Remarks -->
+
+                                <td>
+
+                                    {% if record.Remarks %}
+
+                                        {{ record.Remarks }}
+
+                                    {% else %}
+
+                                        -
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <!-- Delete -->
+
+                                <td>
+
+                                    <a
+                                        href="{% url 'delete_attendance' record.AttendanceID %}"
+                                        class="btn btn-danger btn-small"
+                                        onclick="return confirm('Are you sure you want to delete this attendance record?');"
+                                    >
+
+                                        Delete
+
+                                    </a>
+
+                                </td>
+
+
+                            </tr>
+
+
+                            {% empty %}
+
+                            <tr>
+
+                                <td
+                                    colspan="9"
+                                    class="no-records"
+                                >
+
+                                    No attendance records found.
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<!-- ================= DATE SCRIPT ================= -->
+
+<script>
+
+const dateInput = document.getElementById("attendanceDate");
+
+if (dateInput) {
+
+    const today = new Date();
+
+    const year = today.getFullYear();
+
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+
+    const day = String(today.getDate()).padStart(2, "0");
+
+    dateInput.value = year + "-" + month + "-" + day;
+
+}
+
+</script>
+
+
+</body>
+
+</html>

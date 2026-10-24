@@ -1,0 +1,344 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="page-faculty-salary">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Salary</title>
+
+    
+    <link rel="stylesheet" href="{% static 'style.css' %}?v=5">
+
+    <link rel="stylesheet" href="{% static 'portal-refresh.css' %}?v=1">
+</head>
+
+<body class="page-faculty-salary">
+
+    <div class="header">
+
+        <div class="logo-section">
+
+            <div class="logo">F</div>
+
+            <div class="system-name">
+                Faculty Management System
+            </div>
+
+        </div>
+
+        <div class="user-section">
+
+            <div class="faculty-avatar">
+                {% if faculty.ProfilePhoto %}
+                    <img src="{{ faculty.ProfilePhoto.url }}" alt="Faculty profile photo">
+                {% else %}
+                    {{ faculty.FirstName|first|upper }}
+                {% endif %}
+            </div>
+
+            <a href="{% url 'logout' %}" class="logout-btn">
+                Logout
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="layout">
+
+
+        <div class="sidebar">
+
+            <div class="sidebar-title">
+                Faculty Menu
+            </div>
+
+
+            <a href="{% url 'faculty_dashboard' %}">
+
+                <span class="menu-icon">🏠</span>
+
+                Dashboard
+
+            </a>
+
+
+            <a href="{% url 'faculty_profile' %}">
+
+                <span class="menu-icon">👤</span>
+
+                My Profile
+
+            </a>
+
+
+            <a href="{% url 'faculty_schedule' %}">
+
+                <span class="menu-icon">📅</span>
+
+                My Schedule
+
+            </a>
+
+
+            <a href="{% url 'faculty_attendance' %}">
+
+                <span class="menu-icon">✓</span>
+
+                My Attendance
+
+            </a>
+
+
+            <a href="{% url 'faculty_salary' %}" class="active">
+
+                <span class="menu-icon">💰</span>
+
+                My Salary
+
+            </a>
+
+        </div>
+
+
+        <div class="main-content">
+
+
+            <h1 class="page-title">
+                My Salary
+            </h1>
+
+            <p class="page-subtitle">
+                View your salary details and payment history.
+            </p>
+
+
+            <div class="faculty-info">
+
+                Faculty:
+
+                <span>
+                    {{ faculty.FirstName }} {{ faculty.LastName }}
+                </span>
+
+                &nbsp;&nbsp; | &nbsp;&nbsp;
+
+                Faculty ID:
+
+                <span>
+                    {{ faculty.FacultyID }}
+                </span>
+
+            </div>
+
+
+            {% with latest_salary=salary_records.0 %}
+
+            <div class="summary-cards">
+
+
+                <div class="card">
+
+                    <div class="card-title">
+                        Latest Net Salary
+                    </div>
+
+                    <div class="card-value green">
+
+                        {% if latest_salary %}
+                            ₹{{ latest_salary.NetSalary }}
+                        {% else %}
+                            ₹0
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+                <div class="card">
+
+                    <div class="card-title">
+                        Total Hours
+                    </div>
+
+                    <div class="card-value blue">
+
+                        {% if latest_salary %}
+                            {{ latest_salary.TotalHours }}
+                        {% else %}
+                            0
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+                <div class="card">
+
+                    <div class="card-title">
+                        Hourly Rate
+                    </div>
+
+                    <div class="card-value orange">
+
+                        {% if latest_salary %}
+                            ₹{{ latest_salary.HourlyRate }}
+                        {% else %}
+                            ₹0
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+                <div class="card">
+
+                    <div class="card-title">
+                        Deduction
+                    </div>
+
+                    <div class="card-value">
+
+                        {% if latest_salary %}
+                            ₹{{ latest_salary.Deduction }}
+                        {% else %}
+                            ₹0
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+            {% endwith %}
+
+
+            <div class="salary-section">
+
+                <h2 class="section-title">
+                    Salary History
+                </h2>
+
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Month
+                                </th>
+
+                                <th>
+                                    Year
+                                </th>
+
+                                <th>
+                                    Hourly Rate
+                                </th>
+
+                                <th>
+                                    Total Hours
+                                </th>
+
+                                <th>
+                                    Deduction
+                                </th>
+
+                                <th>
+                                    Net Salary
+                                </th>
+
+                                <th>
+                                    Payment Date
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            {% for salary in salary_records %}
+
+                            <tr>
+
+                                <td>
+                                    {{ salary.Month }}
+                                </td>
+
+                                <td>
+                                    {{ salary.Year }}
+                                </td>
+
+                                <td>
+                                    ₹{{ salary.HourlyRate }}
+                                </td>
+
+                                <td>
+                                    {{ salary.TotalHours }}
+                                </td>
+
+                                <td class="deduction">
+                                    ₹{{ salary.Deduction }}
+                                </td>
+
+                                <td class="net-salary">
+                                    ₹{{ salary.NetSalary }}
+                                </td>
+
+                                <td>
+
+                                    {% if salary.PaymentDate %}
+                                        {{ salary.PaymentDate }}
+                                    {% else %}
+                                        Not Paid
+                                    {% endif %}
+
+                                </td>
+
+                            </tr>
+
+                            {% empty %}
+
+                            <tr>
+
+                                <td colspan="7" class="empty-message">
+
+                                    No salary records found.
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

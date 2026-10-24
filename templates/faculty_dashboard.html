@@ -1,0 +1,685 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="en" class="page-faculty-dashboard">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Faculty Dashboard - Faculty Management System</title>
+
+<link rel="stylesheet" href="{% static 'style.css' %}?v=5">
+
+
+
+</head>
+
+<body class="page-faculty-dashboard">
+
+<header class="top-header">
+<div class="logo-section">
+
+    <div class="logo">
+        F
+    </div>
+
+    <div class="system-name">
+        Faculty Management System
+    </div>
+
+</div>
+
+<div class="faculty-name">
+
+    <form class="faculty-photo-form" id="facultyPhotoForm" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="faculty-avatar">
+            {% if faculty.ProfilePhoto %}
+                <img src="{{ faculty.ProfilePhoto.url }}" alt="Faculty profile photo">
+            {% else %}
+                {{ faculty.FirstName|first|upper }}
+            {% endif %}
+        </div>
+        <input
+            class="faculty-photo-input"
+            id="facultyPhotoInput"
+            type="file"
+            name="profile_photo"
+            accept="image/*">
+        <label class="faculty-photo-trigger" for="facultyPhotoInput" aria-label="Upload profile photo" title="Upload profile photo">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 8h3l1.5-2h7L17 8h3v11H4z"></path>
+                <circle cx="12" cy="13" r="3.5"></circle>
+            </svg>
+        </label>
+    </form>
+
+    <span>
+        {{ faculty.FirstName }} {{ faculty.LastName }}
+    </span>
+
+    <a href="{% url 'logout' %}" class="logout-btn">
+        Logout
+    </a>
+
+</div>
+
+
+</header>
+
+<div class="layout">
+
+<aside class="sidebar">
+
+    <div class="sidebar-title">
+        Faculty Portal
+    </div>
+
+    <ul>
+
+        <li>
+            <a href="{% url 'faculty_dashboard' %}" class="active">
+                <span class="menu-icon">🏠</span>
+                Dashboard
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'faculty_profile' %}">
+                <span class="menu-icon">👤</span>
+                My Profile
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'faculty_schedule' %}">
+                <span class="menu-icon">📅</span>
+                My Schedule
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'faculty_attendance' %}">
+                <span class="menu-icon">✓</span>
+                My Attendance
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'faculty_salary' %}">
+                <span class="menu-icon">💰</span>
+                My Salary
+            </a>
+        </li>
+
+    </ul>
+
+</aside>
+
+
+<main class="main-content">
+
+    <div class="page-header">
+
+        <h1>
+            Dashboard
+        </h1>
+
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == "error" %}
+                <div class="profile-photo-messages" role="status" aria-live="polite">
+                    <div class="profile-photo-message error">
+                        {{ message }}
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+
+    <div class="welcome-banner">
+
+        <div class="welcome-text">
+
+            <h1>
+                Welcome back, {{ faculty.FirstName }}! 👋
+            </h1>
+
+            <p>
+                Here's a quick overview of your faculty activities.
+            </p>
+
+        </div>
+
+        <div class="large-avatar">
+            {% if faculty.ProfilePhoto %}
+                <img src="{{ faculty.ProfilePhoto.url }}" alt="Faculty profile photo">
+            {% else %}
+                {{ faculty.FirstName|first|upper }}
+            {% endif %}
+        </div>
+
+    </div>
+
+
+    <div class="dashboard-cards">
+
+        <div class="dashboard-card">
+
+            <div class="card-top">
+
+                <div>
+
+                    <div class="card-title">
+                        Faculty ID
+                    </div>
+
+                    <div class="card-value">
+                        {{ faculty.FacultyID }}
+                    </div>
+
+                </div>
+
+                <div class="card-icon blue-icon">
+                    ID
+                </div>
+
+            </div>
+
+            <div class="card-subtitle">
+                Your faculty identification
+            </div>
+
+        </div>
+
+
+        <div class="dashboard-card">
+
+            <div class="card-top">
+
+                <div>
+
+                    <div class="card-title">
+                        Today's Classes
+                    </div>
+
+                    <div class="card-value">
+                        {{ today_schedules|length }}
+                    </div>
+
+                </div>
+
+                <div class="card-icon green-icon">
+                    📅
+                </div>
+
+            </div>
+
+            <div class="card-subtitle">
+                Lectures scheduled today
+            </div>
+
+        </div>
+
+
+        <div class="dashboard-card">
+
+            <div class="card-top">
+
+                <div>
+
+                    <div class="card-title">
+                        Present Days
+                    </div>
+
+                    <div class="card-value">
+                        {{ present_days }}
+                    </div>
+
+                </div>
+
+                <div class="card-icon orange-icon">
+                    ✓
+                </div>
+
+            </div>
+
+            <div class="card-subtitle">
+                Attendance records
+            </div>
+
+        </div>
+
+
+        <div class="dashboard-card">
+
+            <div class="card-top">
+
+                <div>
+
+                    <div class="card-title">
+                        Current Salary
+                    </div>
+
+                    <div class="card-value">
+
+                        {% if current_salary %}
+                            ₹{{ current_salary.NetSalary }}
+                        {% else %}
+                            —
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+                <div class="card-icon purple-icon">
+                    ₹
+                </div>
+
+            </div>
+
+            <div class="card-subtitle">
+
+                {% if current_salary %}
+                    Current salary record
+                {% else %}
+                    No record available
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="dashboard-grid">
+
+        <section class="dashboard-section">
+
+            <div class="section-header">
+
+                <h2>
+                    📅 Today's Schedule
+                </h2>
+
+                <span>
+                    {{ today|date:"d M Y" }}
+                </span>
+
+            </div>
+
+
+            {% if today_schedules %}
+
+                {% for schedule in today_schedules %}
+
+                    <div class="lecture-card">
+
+                        <div class="lecture-time">
+
+                            🕐
+                            {{ schedule.StartTime|time:"h:i A" }}
+                            -
+                            {{ schedule.EndTime|time:"h:i A" }}
+
+                        </div>
+
+                        <div class="lecture-subject">
+                            {{ schedule.Subject }}
+                        </div>
+
+                        <div class="lecture-details">
+
+                            <span class="lecture-detail">
+                                Standard:
+                                {{ schedule.Standard|default:"Not Set" }}
+                            </span>
+
+                            <span class="lecture-detail">
+                                Room:
+                                {{ schedule.RoomNumber|default:"Not Set" }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="no-data">
+
+                    🎉 No lectures scheduled for today.
+
+                    <br><br>
+
+                    Enjoy your free time!
+
+                </div>
+
+            {% endif %}
+
+        </section>
+
+
+        <section class="dashboard-section">
+
+            <div class="section-header">
+
+                <h2>
+                    ✓ Attendance
+                </h2>
+
+            </div>
+
+
+            <div class="attendance-summary">
+
+                <div class="attendance-number">
+                    {{ attendance_percentage }}%
+                </div>
+
+                <div class="attendance-label">
+                    Overall Attendance
+                </div>
+
+            </div>
+
+
+            <div class="progress-container">
+
+                <div class="progress-header">
+
+                    <span>
+                        Attendance Progress
+                    </span>
+
+                    <span>
+                        {{ attendance_percentage }}%
+                    </span>
+
+                </div>
+
+                <div class="progress-bar">
+
+                    <div
+                        class="progress-fill"
+                        data-progress="{{ attendance_percentage }}"
+                        role="progressbar"
+                        aria-label="Attendance progress"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                        aria-valuenow="{{ attendance_percentage }}"></div>
+
+                </div>
+
+            </div>
+
+
+            <div class="attendance-stats">
+
+                <div class="attendance-box">
+
+                    <strong>
+                        {{ present_days }}
+                    </strong>
+
+                    <span>
+                        Present
+                    </span>
+
+                </div>
+
+
+                <div class="attendance-box">
+
+                    <strong>
+                        {{ absent_days }}
+                    </strong>
+
+                    <span>
+                        Absent
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+
+    <div class="dashboard-grid">
+
+        <section class="dashboard-section">
+
+            <div class="section-header">
+
+                <h2>
+                    👤 My Profile
+                </h2>
+
+            </div>
+
+
+            <div class="profile-mini">
+
+                <div class="profile-avatar">
+                    {% if faculty.ProfilePhoto %}
+                        <img src="{{ faculty.ProfilePhoto.url }}" alt="Faculty profile photo">
+                    {% else %}
+                        {{ faculty.FirstName|first|upper }}
+                    {% endif %}
+                </div>
+
+                <div>
+
+                    <div class="profile-name">
+                        {{ faculty.FirstName }} {{ faculty.LastName }}
+                    </div>
+
+                    <div class="profile-role">
+                        {{ faculty.Designation }}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="profile-details">
+
+                <div class="profile-detail">
+
+                    <span>
+                        Faculty ID
+                    </span>
+
+                    <strong>
+                        {{ faculty.FacultyID }}
+                    </strong>
+
+                </div>
+
+
+                <div class="profile-detail">
+
+                    <span>
+                        Status
+                    </span>
+
+                    <strong>
+                        {{ faculty.Status }}
+                    </strong>
+
+                </div>
+
+
+                <div class="profile-detail">
+
+                    <span>
+                        Qualification
+                    </span>
+
+                    <strong>
+                        {{ faculty.Qualification }}
+                    </strong>
+
+                </div>
+
+
+                <div class="profile-detail">
+
+                    <span>
+                        Experience
+                    </span>
+
+                    <strong>
+                        {{ faculty.Experience }} Years
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="dashboard-section">
+
+            <div class="section-header">
+
+                <h2>
+                    ⚡ Quick Access
+                </h2>
+
+            </div>
+
+
+            <div class="quick-actions">
+
+                <a href="{% url 'faculty_profile' %}" class="quick-action">
+
+                    <span class="quick-action-icon">
+                        👤
+                    </span>
+
+                    My Profile
+
+                </a>
+
+
+                <a href="{% url 'faculty_schedule' %}" class="quick-action">
+
+                    <span class="quick-action-icon">
+                        📅
+                    </span>
+
+                    My Schedule
+
+                </a>
+
+
+                <a href="#" class="quick-action">
+
+                    <span class="quick-action-icon">
+                        ✓
+                    </span>
+
+                    Attendance
+
+                </a>
+
+
+                <a href="#" class="quick-action">
+
+                    <span class="quick-action-icon">
+                        💰
+                    </span>
+
+                    Salary
+
+                </a>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</main>
+
+</div>
+
+<script>
+    const attendanceProgress = document.querySelector(".progress-fill");
+    if (attendanceProgress) {
+        const percentage = Number(attendanceProgress.dataset.progress);
+        if (Number.isFinite(percentage)) {
+            attendanceProgress.style.width = `${Math.min(100, Math.max(0, percentage))}%`;
+        }
+    }
+
+    document.getElementById("facultyPhotoInput").addEventListener("change", function() {
+        if (this.files.length > 0) {
+            document.getElementById("facultyPhotoForm").requestSubmit();
+        }
+    });
+
+    const facultySidebar = document.querySelector(".sidebar");
+    const facultySidebarTitle = document.querySelector(".sidebar-title");
+    const mobileFacultyMenu = window.matchMedia("(max-width: 700px)");
+
+    function setFacultyMenuMode(isMobile) {
+        if (isMobile) {
+            facultySidebar.classList.add("faculty-menu-collapsible");
+            facultySidebarTitle.classList.add("faculty-menu-toggle");
+            facultySidebarTitle.setAttribute("role", "button");
+            facultySidebarTitle.setAttribute("tabindex", "0");
+            facultySidebarTitle.setAttribute("aria-expanded", "false");
+            facultySidebar.classList.remove("faculty-menu-open");
+            return;
+        }
+
+        facultySidebar.classList.remove("faculty-menu-collapsible", "faculty-menu-open");
+        facultySidebarTitle.classList.remove("faculty-menu-toggle");
+        facultySidebarTitle.removeAttribute("role");
+        facultySidebarTitle.removeAttribute("tabindex");
+        facultySidebarTitle.removeAttribute("aria-expanded");
+    }
+
+    function toggleFacultyMenu() {
+        if (!mobileFacultyMenu.matches) {
+            return;
+        }
+
+        const isOpen = facultySidebar.classList.toggle("faculty-menu-open");
+        facultySidebarTitle.setAttribute("aria-expanded", String(isOpen));
+    }
+
+    facultySidebarTitle.addEventListener("click", toggleFacultyMenu);
+    facultySidebarTitle.addEventListener("keydown", function(event) {
+        if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            toggleFacultyMenu();
+        }
+    });
+
+    setFacultyMenuMode(mobileFacultyMenu.matches);
+    mobileFacultyMenu.addEventListener("change", function(event) {
+        setFacultyMenuMode(event.matches);
+    });
+</script>
+
+</body>
+
+</html>

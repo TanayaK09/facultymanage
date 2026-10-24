@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Faculty - Faculty Management System</title>
+    <link rel="stylesheet" href="/static/style.css?v=4">
+</head>
+<body>
+    <div class="header">
+        <h1>Faculty Management System</h1>
+        <div class="header-user">
+            <span>Welcome, Admin</span>
+            <a href="login.html" class="btn btn-secondary btn-small">Logout</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <div class="sidebar">
+            <ul>
+                <li><a href="admin_dashboard.html">Dashboard</a></li>
+                <li><a href="manage_faculty.html" class="active">Manage Faculty</a></li>
+                <li><a href="schedule.html">Schedule</a></li>
+                <li><a href="attendance.html">Attendance</a></li>
+                <li><a href="salary.html">Salary</a></li>
+                <li><a href="login.html">Logout</a></li>
+            </ul>
+        </div>
+
+        <div class="main-content">
+            <div class="confirmation-container" style="min-height: auto; background-color: transparent; display: block;">
+                <div class="confirmation-box" style="max-width: 600px; margin: 0 auto;">
+                    <h2>Delete Faculty Member</h2>
+                    <p>Are you sure you want to delete this faculty member? This action cannot be undone.</p>
+
+                    <div class="confirmation-details">
+                        <p><strong>Faculty ID:</strong> FAC001</p>
+                        <p><strong>Faculty Name:</strong> Dr. Rajesh Kumar</p>
+                        <p><strong>Subject:</strong> Database Design</p>
+                        <p><strong>Email:</strong> rajesh.kumar@institute.com</p>
+                    </div>
+
+                    <p style="color: #e74c3c; font-weight: 600;">⚠️ Warning: Deleting this faculty member will also remove all associated records including attendance and salary information.</p>
+
+                    <div class="button-group center">
+                        <button type="submit" class="btn btn-danger">Confirm Delete</button>
+                        <a href="manage_faculty.html" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

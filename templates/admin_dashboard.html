@@ -1,0 +1,494 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en" class="page-admin-dashboard">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard - Faculty Management System</title>
+
+    <link rel="stylesheet" href="{% static 'style.css' %}?v=4">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{% static 'admin-ui.js' %}" defer></script>
+
+    
+    <link rel="stylesheet" href="{% static 'portal-refresh.css' %}?v=1">
+</head>
+
+<body class="page-admin-dashboard">
+
+<div class="dashboard-container">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>Admin Panel</h2>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li>
+                <a href="{% url 'dashboard' %}" class="active">
+                    Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'manage_faculty' %}">
+                    Manage Faculty
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'attendance' %}">
+                    Attendance
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'salary' %}">
+                    Salary
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'schedule' %}">
+                    Schedule
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'logout' %}">
+                    Logout
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+
+        <!-- Dashboard Heading -->
+        <div class="dashboard-header">
+            <div class="dashboard-title">
+                <img
+                    class="brand-logo"
+                    src="{% static 'tuition-logo.png' %}"
+                    alt="Mervin Sir's Group Tuitions logo">
+                <div>
+                    <h1>Admin Dashboard</h1>
+                    <p>
+                        Faculty Management System |
+                        {{ today|date:"d F Y" }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="dashboard-cards">
+
+            <div class="dashboard-card card-blue">
+                <h3>Total Faculty</h3>
+                <div class="number">{{ total_faculty }}</div>
+            </div>
+
+            <div class="dashboard-card card-green">
+                <h3>Present Today</h3>
+                <div class="number">{{ present_today }}</div>
+            </div>
+
+            <div class="dashboard-card card-red">
+                <h3>Absent Today</h3>
+                <div class="number">{{ absent_today }}</div>
+            </div>
+
+            <div class="dashboard-card card-orange">
+                <h3>Today's Lectures</h3>
+                <div class="number">{{ today_lectures }}</div>
+            </div>
+
+        </div>
+
+        <!-- 1. Attendance Graph -->
+        <div class="dashboard-section attendance-graph-section">
+
+            <h2>Faculty Attendance Graph</h2>
+
+            <p style="color: #566573; font-size: 14px; margin-bottom: 20px;">
+                View today's faculty attendance. Hover over the chart
+                to see the number and percentage of present and absent faculty.
+            </p>
+
+            <div class="chart-container">
+                <canvas id="attendanceChart"></canvas>
+            </div>
+
+        </div>
+
+        <!-- 2. Today's Schedule -->
+        <div class="dashboard-section schedule-section">
+
+            <h2>Today's Schedule</h2>
+
+            <div class="section-toolbar">
+                <input
+                    type="search"
+                    id="scheduleSearch"
+                    class="search-input"
+                    placeholder="Search subject, faculty or room...">
+            </div>
+
+            <div class="schedule-list" id="scheduleList">
+
+                {% for schedule in today_schedules %}
+
+                    <div class="schedule-item">
+
+                        <div class="schedule-info">
+                            <strong>{{ schedule.Subject }}</strong>
+
+                            <span>
+                                {{ schedule.FacultyID.FirstName }}
+                                {{ schedule.FacultyID.LastName }}
+                                | Room {{ schedule.RoomNumber }}
+                            </span>
+                        </div>
+
+                        <div class="schedule-time">
+                            {{ schedule.StartTime|time:"H:i" }}
+                            -
+                            {{ schedule.EndTime|time:"H:i" }}
+                        </div>
+
+                    </div>
+
+                {% empty %}
+
+                    <div class="empty-message">
+                        No lectures scheduled for today.
+                    </div>
+
+                {% endfor %}
+
+                <div id="noScheduleResults"
+                     class="empty-message"
+                     style="display: none;">
+                    No matching schedules found.
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 3. Recent Attendance -->
+        <div class="dashboard-section recent-attendance-section">
+
+            <h2>Recent Attendance</h2>
+
+            <div class="section-toolbar">
+
+                <input
+                    type="search"
+                    id="attendanceSearch"
+                    class="search-input"
+                    placeholder="Search faculty ID or name...">
+
+                <select id="statusFilter" class="filter-select">
+                    <option value="all">All Statuses</option>
+                    <option value="present">Present</option>
+                    <option value="absent">Absent</option>
+                </select>
+
+            </div>
+
+            <p id="resultCount"
+               style="font-size: 13px; color: #566573;"></p>
+
+            <div class="dashboard-table-container">
+
+                <table class="dashboard-table" id="attendanceTable">
+
+                    <thead>
+                        <tr>
+                            <th>Faculty ID</th>
+                            <th>Faculty Name</th>
+                            <th>Date</th>
+                            <th>Check In</th>
+                            <th>Check Out</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for attendance in recent_attendance %}
+
+                            <tr
+                                class="attendance-row"
+                                data-status="{{ attendance.Status|lower }}">
+
+                                <td>
+                                    {{ attendance.FacultyID.FacultyID }}
+                                </td>
+
+                                <td>
+                                    {{ attendance.FacultyID.FirstName }}
+                                    {{ attendance.FacultyID.LastName }}
+                                </td>
+
+                                <td>
+                                    {{ attendance.Date|date:"d-m-Y" }}
+                                </td>
+
+                                <td>
+                                    {% if attendance.CheckInTime %}
+                                        {{ attendance.CheckInTime|time:"H:i" }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {% if attendance.CheckOutTime %}
+                                        {{ attendance.CheckOutTime|time:"H:i" }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {% if attendance.Status == "Present" %}
+                                        <span class="status-present">
+                                            Present
+                                        </span>
+                                    {% elif attendance.Status == "Absent" %}
+                                        <span class="status-absent">
+                                            Absent
+                                        </span>
+                                    {% else %}
+                                        {{ attendance.Status }}
+                                    {% endif %}
+                                </td>
+
+                            </tr>
+
+                        {% empty %}
+
+                            <tr>
+                                <td colspan="6" style="text-align: center;">
+                                    No attendance records available.
+                                </td>
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+
+                <div id="noAttendanceResults"
+                     class="empty-message"
+                     style="display: none;">
+                    No matching attendance records found.
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<script>
+    // Interactive doughnut chart for today's attendance
+    const attendanceCanvas = document.getElementById("attendanceChart");
+
+    const presentCount = Number("{{ present_today|default:0 }}");
+    const absentCount = Number("{{ absent_today|default:0 }}");
+
+    new Chart(attendanceCanvas, {
+        type: "doughnut",
+
+        data: {
+            labels: ["Present Faculty", "Absent Faculty"],
+
+            datasets: [{
+                data: [presentCount, absentCount],
+
+                backgroundColor: [
+                    "#27AE60",
+                    "#E67E22"
+                ],
+
+                hoverBackgroundColor: [
+                    "#219150",
+                    "#CA6F1E"
+                ],
+
+                hoverOffset: 15,
+                borderWidth: 3,
+                borderColor: "#FFFFFF"
+            }]
+        },
+
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: "62%",
+
+            animation: {
+                animateRotate: true,
+                animateScale: true,
+                duration: 1000
+            },
+
+            plugins: {
+                legend: {
+                    position: "bottom",
+
+                    labels: {
+                        padding: 20,
+                        usePointStyle: true,
+                        pointStyle: "circle",
+                        color: "#52627a",
+                        font: {
+                            family: "Inter, Segoe UI, sans-serif",
+                            size: 12,
+                            weight: "600"
+                        }
+                    }
+                },
+
+                tooltip: {
+                    enabled: true,
+                    backgroundColor: "rgba(19, 35, 62, 0.96)",
+                    titleColor: "#ffffff",
+                    bodyColor: "#e8effa",
+                    borderColor: "rgba(255, 255, 255, 0.16)",
+                    borderWidth: 1,
+                    cornerRadius: 10,
+                    padding: 12,
+                    displayColors: true,
+
+                    callbacks: {
+                        label: function(context) {
+                            const value = context.raw;
+
+                            const total = context.dataset.data.reduce(
+                                (sum, number) => sum + number, 0
+                            );
+
+                            const percentage = total > 0
+                                ? ((value / total) * 100).toFixed(1)
+                                : "0.0";
+
+                            return context.label + ": " + value +
+                                " (" + percentage + "%)";
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Search today's schedule
+    const scheduleSearch = document.getElementById("scheduleSearch");
+    const scheduleItems = document.querySelectorAll(".schedule-item");
+    const noScheduleResults = document.getElementById("noScheduleResults");
+
+    scheduleSearch.addEventListener("input", function() {
+        const query = this.value.toLowerCase().trim();
+        let visibleCount = 0;
+
+        scheduleItems.forEach(function(item) {
+            const matches = item.textContent.toLowerCase().includes(query);
+
+            item.style.display = matches ? "flex" : "none";
+
+            if (matches) {
+                visibleCount++;
+            }
+        });
+
+        noScheduleResults.style.display =
+            scheduleItems.length > 0 && visibleCount === 0
+                ? "block"
+                : "none";
+    });
+
+    // Search and filter recent attendance
+    const attendanceSearch = document.getElementById("attendanceSearch");
+    const statusFilter = document.getElementById("statusFilter");
+    const attendanceRows = document.querySelectorAll(".attendance-row");
+    const noAttendanceResults = document.getElementById("noAttendanceResults");
+    const resultCount = document.getElementById("resultCount");
+
+    function filterAttendance() {
+        const query = attendanceSearch.value.toLowerCase().trim();
+        const selectedStatus = statusFilter.value;
+        let visibleCount = 0;
+
+        attendanceRows.forEach(function(row) {
+            const text = row.textContent.toLowerCase();
+            const status = row.dataset.status;
+
+            const matchesSearch = text.includes(query);
+
+            const matchesStatus =
+                selectedStatus === "all" || status === selectedStatus;
+
+            const showRow = matchesSearch && matchesStatus;
+
+            row.style.display = showRow ? "" : "none";
+
+            if (showRow) {
+                visibleCount++;
+            }
+        });
+
+        resultCount.textContent =
+            "Showing " + visibleCount + " of " +
+            attendanceRows.length + " records";
+
+        noAttendanceResults.style.display =
+            attendanceRows.length > 0 && visibleCount === 0
+                ? "block"
+                : "none";
+    }
+
+    attendanceSearch.addEventListener("input", filterAttendance);
+    statusFilter.addEventListener("change", filterAttendance);
+
+    filterAttendance();
+
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        document.querySelectorAll(".dashboard-card .number").forEach(function(element, index) {
+            const originalText = element.textContent.trim();
+            const targetValue = Number(originalText.replace(/,/g, ""));
+
+            if (!Number.isFinite(targetValue)) {
+                return;
+            }
+
+            const duration = 850;
+            const startTime = performance.now() + index * 90;
+
+            function animateCount(now) {
+                const progress = Math.max(0, Math.min((now - startTime) / duration, 1));
+                const easedProgress = 1 - Math.pow(1 - progress, 3);
+
+                element.textContent = Math.round(targetValue * easedProgress).toLocaleString();
+
+                if (progress < 1) {
+                    requestAnimationFrame(animateCount);
+                } else {
+                    element.textContent = originalText;
+                }
+            }
+
+            element.textContent = "0";
+            requestAnimationFrame(animateCount);
+        });
+    }
+</script>
+
+</body>
+</html>

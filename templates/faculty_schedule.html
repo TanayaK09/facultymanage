@@ -1,0 +1,207 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en" class="page-faculty-schedule">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Schedule - Faculty Management System</title>
+
+    <link rel="stylesheet" href="{% static 'style.css' %}?v=5">
+
+    
+    <link rel="stylesheet" href="{% static 'portal-refresh.css' %}?v=1">
+</head>
+
+<body class="page-faculty-schedule">
+
+    <header class="top-header">
+
+        <div class="logo-section">
+            <div class="logo">F</div>
+            <div class="system-name">Faculty Management System</div>
+        </div>
+
+        <div class="faculty-name">
+
+            <div class="faculty-avatar">
+                {% if faculty.ProfilePhoto %}
+                    <img src="{{ faculty.ProfilePhoto.url }}" alt="Faculty profile photo">
+                {% else %}
+                    {{ faculty.FirstName|first|upper }}
+                {% endif %}
+            </div>
+
+            <span>
+                {{ faculty.FirstName }} {{ faculty.LastName }}
+            </span>
+
+            <a href="{% url 'logout' %}" class="logout-btn">
+                Logout
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <div class="layout">
+
+        <aside class="sidebar">
+
+            <div class="sidebar-title">
+                Faculty Portal
+            </div>
+
+            <ul>
+
+                <li>
+                    <a href="{% url 'faculty_dashboard' %}">
+                        <span class="menu-icon">🏠</span>
+                        Dashboard
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{% url 'faculty_profile' %}">
+                        <span class="menu-icon">👤</span>
+                        My Profile
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{% url 'faculty_schedule' %}" class="active">
+                        <span class="menu-icon">📅</span>
+                        My Schedule
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{% url 'faculty_attendance' %}">
+                        <span class="menu-icon">✓</span>
+                        My Attendance
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{% url 'faculty_salary' %}">
+                        <span class="menu-icon">💰</span>
+                        My Salary
+                    </a>
+                </li>
+
+            </ul>
+
+        </aside>
+
+
+        <main class="main-content">
+
+            <div class="page-header">
+
+                <h1>My Schedule</h1>
+
+                <p>
+                    View your upcoming classes and teaching schedule.
+                </p>
+
+            </div>
+
+
+            <div class="schedule-container">
+
+                <div class="schedule-top">
+
+                    <h2>Class Schedule</h2>
+
+                    <div class="faculty-badge">
+                        Faculty ID: {{ faculty.FacultyID }}
+                    </div>
+
+                </div>
+
+
+                {% if schedules %}
+
+                    <div class="schedule-list">
+
+                        {% for schedule in schedules %}
+
+                            <div class="schedule-card">
+
+                                <div class="date-box">
+
+                                    <div class="day">
+                                        {{ schedule.Day }}
+                                    </div>
+
+                                    <div class="date">
+                                        {{ schedule.Date|date:"d M" }}
+                                    </div>
+
+                                </div>
+
+
+                                <div class="schedule-info">
+
+                                    <h3>
+                                        {{ schedule.Subject }}
+                                    </h3>
+
+                                    <p>
+                                        <strong>Standard:</strong>
+                                        {{ schedule.Standard|default:"Not specified" }}
+                                    </p>
+
+                                    <p>
+                                        <strong>Date:</strong>
+                                        {{ schedule.Date|date:"d M Y" }}
+                                    </p>
+
+                                </div>
+
+
+                                <div class="time-box">
+
+                                    {{ schedule.StartTime|time:"h:i A" }}
+                                    -
+                                    {{ schedule.EndTime|time:"h:i A" }}
+
+                                    <span class="room">
+                                        Room {{ schedule.RoomNumber }}
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="no-schedule">
+
+                        <div class="no-schedule-icon">
+                            📅
+                        </div>
+
+                        <h3>No Schedule Available</h3>
+
+                        <p>
+                            There are no classes assigned to you at the moment.
+                        </p>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </main>
+
+    </div>
+
+</body>
+</html>

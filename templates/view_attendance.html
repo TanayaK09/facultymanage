@@ -1,0 +1,208 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en" class="page-view-attendance">
+<head>
+    <meta charset="UTF-8">
+    <title>View Attendance</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}?v=4">
+
+    
+</head>
+
+<body class="page-view-attendance">
+
+<div class="dashboard-container">
+
+    <aside class="sidebar">
+
+        <div class="sidebar-header">
+            <h2>Admin Panel</h2>
+        </div>
+
+        <ul class="sidebar-menu">
+
+            <li>
+                <a href="{% url 'dashboard' %}">
+                    Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'manage_faculty' %}">
+                    Manage Faculty
+                </a>
+            </li>
+            <li>
+                <a href="{ % url 'schedule'%}">
+                    Schedule
+                </a>
+            </li>
+
+            <li class="attendance-tree">
+
+                <a href="#" onclick="toggleAttendance(event)">
+                    Attendance
+                </a>
+
+                <ul id="attendanceSubmenu" class="attendance-submenu">
+
+                    <li>
+                        <a href="{% url 'attendance' %}">
+                            Mark Attendance
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{% url 'view_attendance' %}" class="submenu-active">
+                            View Attendance
+                        </a>
+                    </li>
+
+                </ul>
+
+            </li>
+
+            <li>
+                <a href="{% url 'salary' %}">
+                    Salary
+                </a>
+            </li>
+
+            
+
+            <li>
+                <a href="{% url 'logout' %}">
+                    Logout
+                </a>
+            </li>
+
+        </ul>
+
+    </aside>
+
+    <main class="main-content">
+
+        <div class="view-attendance-page">
+
+            <div class="attendance-card">
+
+                <h2>View Attendance</h2>
+
+                {% if attendance_records %}
+
+                <div class="attendance-table-wrapper">
+
+                    <table class="attendance-table">
+
+                        <thead>
+                            <tr>
+                                <th>Attendance ID</th>
+                                <th>Faculty ID</th>
+                                <th>Faculty Name</th>
+                                <th>Date</th>
+                                <th>Check In</th>
+                                <th>Check Out</th>
+                                <th>Status</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            {% for record in attendance_records %}
+
+                            <tr>
+                                <td>{{ record.AttendanceID }}</td>
+
+                                <td>
+                                    {{ record.FacultyID.FacultyID }}
+                                </td>
+
+                                <td>
+                                    {{ record.FacultyID.FirstName }}
+                                    {{ record.FacultyID.LastName }}
+                                </td>
+
+                                <td>
+                                    {{ record.Date|date:"d-m-Y" }}
+                                </td>
+
+                                <td>
+                                    {% if record.CheckInTime %}
+                                        {{ record.CheckInTime|time:"h:i A" }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {% if record.CheckOutTime %}
+                                        {{ record.CheckOutTime|time:"h:i A" }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {% if record.Status == "Present" %}
+                                        <span class="status-present">
+                                            Present
+                                        </span>
+                                    {% else %}
+                                        <span class="status-absent">
+                                            Absent
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {% if record.Remarks %}
+                                        {{ record.Remarks }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                {% else %}
+
+                <div class="no-records">
+                    No attendance records found.
+                </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+<script>
+function toggleAttendance(event) {
+    event.preventDefault();
+
+    const submenu = document.getElementById("attendanceSubmenu");
+
+    if (submenu.style.display === "block") {
+        submenu.style.display = "none";
+    } else {
+        submenu.style.display = "block";
+    }
+}
+</script>
+
+</body>
+</html>
