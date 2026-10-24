@@ -23,10 +23,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-$u9jt)a!6-yj$5lssvtq017lkto!11w%s&5pfkaictp3_qfitm'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "facultymanage.onrender.com",
+    "localhost",
+    "127.0.0.1",
+]
 
+DEBUG = False
 
 # Application definition
 
@@ -134,3 +138,7 @@ MAILERS = {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://facultymanage.onrender.com",
+]
