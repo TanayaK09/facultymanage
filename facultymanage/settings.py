@@ -26,13 +26,11 @@ SECRET_KEY = 'django-insecure-$u9jt)a!6-yj$5lssvtq017lkto!11w%s&5pfkaictp3_qfitm
 
 ALLOWED_HOSTS = [
    
-     "TanayaK09.pythonanywhere.com",
-    "facultymanage.onrender.com",
     "localhost",
     "127.0.0.1",
 ]
 
-DEBUG = False
+DEBUG = True
 
 # Application definition
 
@@ -159,6 +157,4 @@ MAILERS = {
     },
 }
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://tanayak09.pythonanywhere.com/",
-]
+CSRF_TRUSTED_ORIGINS = []
