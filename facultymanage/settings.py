@@ -25,12 +25,12 @@ SECRET_KEY = 'django-insecure-$u9jt)a!6-yj$5lssvtq017lkto!11w%s&5pfkaictp3_qfitm
 # SECURITY WARNING: don't run with debug turned on in production!
 
 ALLOWED_HOSTS = [
-   
+    "TanayaK09.render.com",
     "localhost",
     "127.0.0.1",
 ]
 
-DEBUG = True
+DEBUG = False
 
 # Application definition
 
@@ -157,4 +157,7 @@ MAILERS = {
     },
 }
 
-CSRF_TRUSTED_ORIGINS = []
+CSRF_TRUSTED_ORIGINS = [ 
+    
+    "https://TanayaK09.render.com",
+]
